@@ -15,6 +15,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 app.post("/dream", async (req, res) => {
+    try{
   const prompt = req.body.prompt;
 
   const aiResponse = await openai.createImage({
@@ -26,9 +27,15 @@ app.post("/dream", async (req, res) => {
   console.log(aiResponse)
   const image = aiResponse.data.data[0].url;
   res.send({ image });
+}
+   catch (error) {
 
- 
+    console.error(error)
+    res.status(500).send(error?.response.data.error.message || 'Something went wrong');
+  }
 });
+
+
 
  app.listen(8080, () =>
    console.log("connected to backend on http://localhost:8080/dream")
